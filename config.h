@@ -5,7 +5,7 @@
 
 typedef struct {
 	int width, height;
-	int jobsize, jobs, procn;
+	int jobsize, jobs, threads;
 
 	char* statefile;
 	char* output;

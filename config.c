@@ -118,7 +118,7 @@ conf_load(char* path, config_t** conf) {
 	        (!conf_get_int(ini, "nebula2:height", &((*conf)->height))) ||
 	        (!conf_get_int(ini, "nebula2:jobsize", &((*conf)->jobsize))) ||
 	        (!conf_get_int(ini, "nebula2:jobs", &((*conf)->jobs))) ||
-	        (!conf_get_int(ini, "nebula2:procn", &((*conf)->procn)))) {
+	        (!conf_get_int(ini, "nebula2:threads", &((*conf)->threads)))) {
 		goto failed;
 	}
 
@@ -197,7 +197,7 @@ conf_print(config_t* conf) {
 	printf("height: %d\n",    conf->height);
 	printf("jobsize: %d\n",   conf->jobsize);
 	printf("jobs: %d\n",      conf->jobs);
-	printf("procn: %d\n",     conf->procn);
+	printf("threads: %d\n",     conf->threads);
 	printf("statefile: %s\n", conf->statefile);
 	printf("output: %s\n",    conf->output);
 

@@ -1,9 +1,9 @@
 CC=gcc
-CFLAGS=-Wall -Werror -pedantic -std=c99 -static
-LIBS=-Liniparser -liniparser
+CFLAGS=-Wall -Werror -pedantic
+LIBS=-lpthread
 
-nebula2: nebula2.o config.o iniparser/libiniparser.a
-	$(CC) $(CFLAGS) -o nebula2 nebula2.o config.o iniparser/libiniparser.a
+nebula2: nebula2.o config.o render.o statefile.o mutex_helpers.o iniparser/libiniparser.a
+	$(CC) $(CFLAGS) $(LIBS) -o nebula2 nebula2.o config.o render.o statefile.o mutex_helpers.o iniparser/libiniparser.a
 
 iniparser/libiniparser.a:
 	make -C iniparser libiniparser.a
