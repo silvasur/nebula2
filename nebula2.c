@@ -156,11 +156,11 @@ calc_pos(double zx, double zy, size_t width, size_t height, double conv, int hw,
 	pos_t rv;
 	rv.x = fast_floor(zx * conv) + hw;
 	rv.y = fast_floor(zy * conv) + hh;
-	
+
 	if((rv.x < 0) || (rv.y < 0) || (rv.x >= width) || (rv.y >= height)) {
 		rv.x = -1;
 	}
-	
+
 	return rv;
 }
 
@@ -176,21 +176,21 @@ worker(void* _wd) {
 	double   cx, cy, zx, zy;
 
 	/* Misc... */
-	int     todo;
-	int     iter, maxiter, mii;
-	size_t  off, mapsize;
-	pos_t pos;
+	int    todo;
+	int    iter, maxiter, mii;
+	size_t off, mapsize;
+	pos_t  pos;
 
 	/* Aliases */
 	worker_data_t* wd         = _wd;
 	nebula_data_t* nd         = wd->nd;
 	config_t*      conf       = wd->conf;
 	sfmt_t*        sfmt_state = wd->sfmt_state;
-	pos_t* pointlist;
-	uint32_t*      map        = nd->map;
-	size_t width = conf->width;
-	size_t height = conf->height;
-	
+	pos_t*         pointlist;
+	uint32_t*      map    = nd->map;
+	size_t         width  = conf->width;
+	size_t         height = conf->height;
+
 	precalc_nebula_params(conf, &conv, &mult_x, &mult_y, &hw, &hh);
 	mapsize = width * height;
 	maxiter = conf->iters[conf->iters_n - 1];
@@ -359,7 +359,7 @@ setup_sighandler(void) {
 void
 stop_workers(nebula_data_t* nd, worker_data_t* workers, int* workers_alive) {
 	int rq;
-	
+
 	while(*workers_alive > 0) {
 		rq = jobrq_get(nd);
 		if(rq >= 0) {
@@ -424,7 +424,7 @@ nebula2(config_t* conf) {
 		fprintf(stderr, "Error while saving state: %s\n", strerror(errno));
 		goto tidyup;
 	}
-	
+
 	rv = render(conf, nd->map) ? 0 : 1;
 
 tidyup:
