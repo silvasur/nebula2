@@ -91,10 +91,12 @@ bmp_write_pixel(bmp_write_handle_t* bmph, color_t col) {
 		return 0;
 	}
 	
-	if(--(bmph->line_left) == 0) {
-		bmph->line_left = bmph->width;
-		
-		return (fwrite(padding, bmph->line_padding, 1, bmph->fh) == 1);
+	if(bmph->line_padding != 0) {
+		if(--(bmph->line_left) == 0) {
+			bmph->line_left = bmph->width;
+			
+			return (fwrite(padding, bmph->line_padding, 1, bmph->fh) == 1);
+		}
 	}
 	
 	return 1;
