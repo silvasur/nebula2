@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "color.h"
+#include "bmp.h"
 
 /* Adding submap i to all submaps > i to reconstruct the result of single buddhabrot calculations. */
 static void
@@ -24,52 +25,6 @@ add_submaps(config_t* conf, uint32_t* map) {
 			}
 		}
 	}
-}
-
-#define BYTES_PER_PIXEL 3
-#define OFFSET_bfSize   2
-#define OFFSET_biWidth  18
-#define OFFSET_biHeight 22
-#define HEADERSIZE      54
-
-static const char* header_template = "BM    \0\0\0\0\x36\0\0\0\x28\0\0\0        \x01\0\x18\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-
-static int
-bmp_write_header(FILE* fh, int32_t width, int32_t height) {
-	char* header;
-	uint32_t filesize;
-	
-	if(!(header = malloc(HEADERSIZE))) {
-		fputs("Could not allocate memory for BMP header.\n", stderr);
-		return 0;
-	}
-	
-	filesize = HEADERSIZE + (width * height * BYTES_PER_PIXEL);
-	height *= -1;
-	
-	memcpy(header, header_template, HEADERSIZE);
-	memcpy(header + OFFSET_bfSize, &filesize, 4);
-	memcpy(header + OFFSET_biWidth, &width, 4);
-	memcpy(header + OFFSET_biHeight, &height, 4);
-	
-	if(fwrite(header, HEADERSIZE, 1, fh) != 1) {
-		fprintf(stderr, "Could not write BMP header: %s\n", strerror(errno));
-		free(header);
-		return 0;
-	}
-	
-	free(header);
-	return 1;
-}
-
-static int
-bmp_write_pixel(FILE* fh, color_t col) {
-	uint8_t pixel[3];
-	pixel[0] = col.b;
-	pixel[1] = col.g;
-	pixel[2] = col.r;
-	
-	return (fwrite(pixel, 3, 1, fh) == 1);
 }
 
 typedef struct lookup_elem_t {
@@ -212,7 +167,7 @@ render(config_t* conf, uint32_t* map) {
 	size_t i, j;
 	color_t col;
 	double factor;
-	FILE* fh = NULL;
+	bmp_write_handle_t* bmph = NULL;
 	size_t mapsize = conf->width * conf->height;
 	
 	lookup_elem_t** lookups = NULL;
@@ -227,12 +182,9 @@ render(config_t* conf, uint32_t* map) {
 		goto tidyup;
 	}
 	
-	if(!(fh = fopen(conf->output, "wb"))) {
-		fprintf(stderr, "Could not open output file '%s': %s\n", conf->output, strerror(errno));
-		goto tidyup;
-	}
-	
-	if(!bmp_write_header(fh, conf->width, conf->height)) {
+	if(!(bmph = bmp_create(conf->output, conf->width, conf->height))) {
+		fprintf(stderr, "Could not create BMP.\n");
+		/* TODO: More details? */
 		goto tidyup;
 	}
 	
@@ -255,8 +207,8 @@ render(config_t* conf, uint32_t* map) {
 			factor = (double) lookup(map[i + mapsize * j], &(lookups[j]), &(poss[j])) / (double) lens[j];
 			col = color_add(col, color_mul(conf->colors[j], factor));
 		}
-		if(!bmp_write_pixel(fh, color_fix(col))) {
-			fputs("Could not write pixel data.", stderr);
+		if(!bmp_write_pixel(bmph, color_fix(col))) {
+			fputs("Could not write pixel data.\n", stderr);
 			goto tidyup;
 		}
 	}
@@ -264,8 +216,8 @@ render(config_t* conf, uint32_t* map) {
 	rv = 1;
 	
 tidyup:
-	if(fh) {
-		fclose(fh);
+	if(bmph) {
+		bmp_destroy(bmph);
 	}
 	if(lookups) {
 		for(i = 0; i < conf->iters_n; i++) {
