@@ -97,6 +97,7 @@ conf_load(char* path, config_t** conf) {
 	int         i;
 	dictionary* ini = NULL;
 	char        namebuf[NAMEBUF_SIZE];
+	int         last_iter = 0;
 
 	if(!(*conf = malloc(sizeof(config_t)))) {
 		fputs("Could not allocate memory.\n", stderr);
@@ -163,6 +164,12 @@ conf_load(char* path, config_t** conf) {
 		if(!conf_get_int(ini, namebuf, &((*conf)->iters[i]))) {
 			goto failed;
 		}
+
+		if((*conf)->iters[i] <= last_iter) {
+			fputs("iterX values must be in ascending order.\n", stderr);
+			goto failed;
+		}
+		last_iter = (*conf)->iters[i];
 
 		if(snprintf(namebuf, NAMEBUF_SIZE, "nebula2:color%d", i) < 0) {
 			fputs("Error while reading colorX values.\n", stderr);
