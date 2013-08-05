@@ -10,19 +10,32 @@ nebula2 uses these libraries:
 * [iniparser](https://github.com/ndevilla/iniparser) for parsing ini files (no, really!). (included as git submodule).
 * [pthreads](http://en.wikipedia.org/wiki/Pthreads) for parallelism. Should ship with your Linux distribution.
 
+## Get the sources
+
+### Using git
+
+	git clone https://github.com/kch42/nebula2.git
+	cd nebula2
+	git submodule init
+	git submodule update
+
+### As `.tar.bz2` archive
+
+[kch42.de/progs/nebula2.tar.bz2](http://kch42.de/progs/nebula2.tar.bz2)
+
 ## Building
 
 Simply run `make` in this directory.
 
 If you have a CPU that does not support SSE2 you should remove the `-DHAVE_SSE2` part of the `SFMTFLAGS` variable in the Makefile.
 
-## Running / Config file
+## Usage
 
 nebula2 needs a config file. It is an ini file. All parameters must belong to the section \[nebula2\].
 
 ### Config parameters
 
-* **width** — The image width.
+* **width** – The image width.
 * **height** – The image heigth.
 * **jobsize** – The size of a singe job (how many mandelbrot traces should be recorded during one job).
 * **jobs** – The number of jobs to execute. If the image quality is not good enough, you can later increase this number and rerun nebula2. It will continue where it left, if the statefile is still there.
