@@ -49,7 +49,7 @@ See `example.ini` for an example.
 
 ### Aborting and continuing calculation.
 
-Calculation can be aborted by sending the `SIGINT` signal to the nebula2 process (this can usually be achieved by pressing <Ctrl + C> in the terminal with the nebula2 process). Stopping the job might take a while (it needs to save the current state. Also the image is rendered).
+Calculation can be aborted by sending the `SIGINT` signal to the nebula2 process (this can usually be achieved by pressing `Ctrl + C` in the terminal with the nebula2 process). Stopping the job might take a while (it needs to save the current state. Also the image is rendered).
 
 You can continue the calculation by simply executing nebula2 with the same config file again (if the statefile is still there).
 
