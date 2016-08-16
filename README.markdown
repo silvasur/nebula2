@@ -14,14 +14,14 @@ nebula2 uses these libraries:
 
 ### Using git
 
-	git clone https://github.com/kch42/nebula2.git
+	git clone https://github.com/silvasur/nebula2.git
 	cd nebula2
 	git submodule init
 	git submodule update
 
 ### As `.tar.bz2` archive
 
-[kch42.de/progs/nebula2.tar.bz2](http://kch42.de/progs/nebula2.tar.bz2)
+[hi-im.laria.me/progs/nebula2.tar.bz2](http://hi-im.laria.me/progs/nebula2.tar.bz2)
 
 ## Building
 
